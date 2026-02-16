@@ -542,8 +542,28 @@
         </div>
     </footer>
 
-    <script>
-        // 1. 스크롤 애니메이션 (타임라인 등장 효과)
+    <script type="module">
+        // 1. Firebase 라이브러리 가져오기
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } 
+        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCAmV16VvfgNaLD-RzMLSLT65dynoJCmNM",
+            authDomain: "trail-forum-2026.firebaseapp.com",
+            projectId: "trail-forum-2026",
+            storageBucket: "trail-forum-2026.firebasestorage.app",
+            messagingSenderId: "553427942053",
+            appId: "1:553427942053:web:77007ea25f2e9147572b4c"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const commentsRef = collection(db, "comments"); // 'comments'라는 이름의 컬렉션 사용
+
+        // 2. 스크롤 애니메이션
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -556,8 +576,8 @@
             observer.observe(item);
         });
 
-        // 2. 아코디언 토글 함수
-        function toggleAccordion(id) {
+        // 3. 아코디언 토글 (전역 함수로 만들기 위해 window에 할당)
+        window.toggleAccordion = function(id) {
             const el = document.getElementById(id);
             if (el.style.display === "block") {
                 el.style.display = "none";
@@ -566,41 +586,52 @@
             }
         }
 
-        // 3. 댓글 시스템 (Local Storage 활용)
+        // 4. 댓글 시스템 (Firebase 실시간 연동)
         const commentListEl = document.getElementById('commentList');
+
+        // 실시간으로 데이터베이스 변화 감지 및 화면 업데이트
+        const q = query(commentsRef, orderBy("timestamp", "desc"));
         
-        // 초기 데이터 (예시)
-        const initialComments = [
-            { name: "예비공학도(예시)", text: "나와 다른 분야 사람들과 소통하는 게 항상 어려웠는데, 이번 포럼이 정말 기대됩니다!", date: "2026. 2. 16" },
-            { name: "SNU_Lover(예시)", text: "Resonance라는 주제가 정말 멋지네요. 융합의 시대에 꼭 필요한 논의라고 생각합니다.", date: "2026. 2. 15" }
-        ];
+        onSnapshot(q, (snapshot) => {
+            commentListEl.innerHTML = ''; // 목록 초기화
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                // Firestore 타임스탬프를 날짜 형식으로 변환
+                let dateStr = "날짜 없음";
+                if(data.timestamp) {
+                    dateStr = data.timestamp.toDate().toLocaleDateString();
+                }
+                createCommentElement(data.name, data.text, dateStr);
+            });
+        });
 
-        // 저장된 댓글 불러오기
-        function loadComments() {
-            const stored = localStorage.getItem('trailComments');
-            const comments = stored ? JSON.parse(stored) : initialComments;
-            
-            commentListEl.innerHTML = '';
-            comments.forEach(c => createCommentElement(c));
-        }
-
-        // 댓글 요소 생성 및 추가
-        function createCommentElement(data) {
+        // 화면에 댓글 그리는 함수
+        function createCommentElement(name, text, date) {
             const div = document.createElement('div');
             div.className = 'comment-card';
             div.innerHTML = `
                 <div class="comment-header">
-                    <span class="comment-author">${data.name}</span>
-                    <span>${data.date}</span>
+                    <span class="comment-author">${escapeHtml(name)}</span>
+                    <span>${date}</span>
                 </div>
-                <div class="comment-body">${data.text}</div>
+                <div class="comment-body">${escapeHtml(text)}</div>
             `;
-            // 최신순으로 위에 추가
-            commentListEl.prepend(div);
+            commentListEl.appendChild(div);
         }
 
-        // 댓글 추가 함수
-        function addComment() {
+        // HTML 태그 주입 방지 (보안)
+        function escapeHtml(text) {
+            if (!text) return "";
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // 댓글 추가 함수 (버튼 클릭 시 실행)
+        window.addComment = async function() {
             const nameInput = document.getElementById('commentName');
             const textInput = document.getElementById('commentText');
             
@@ -609,33 +640,32 @@
                 return;
             }
 
-            const newComment = {
-                name: nameInput.value,
-                text: textInput.value,
-                date: new Date().toLocaleDateString()
-            };
+            const name = nameInput.value;
+            const text = textInput.value;
 
-            // 로컬 스토리지 업데이트
-            const stored = localStorage.getItem('trailComments');
-            const comments = stored ? JSON.parse(stored) : initialComments;
-            comments.push(newComment);
-            localStorage.setItem('trailComments', JSON.stringify(comments));
+            try {
+                // Firebase에 데이터 저장
+                await addDoc(commentsRef, {
+                    name: name,
+                    text: text,
+                    timestamp: serverTimestamp() // 서버 시간 사용
+                });
+                
+                // 입력창 초기화
+                nameInput.value = '';
+                textInput.value = '';
+                alert("의견이 등록되었습니다!");
 
-            // 화면 업데이트
-            createCommentElement(newComment);
-
-            // 입력창 초기화
-            nameInput.value = '';
-            textInput.value = '';
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                alert("오류가 발생했습니다. 다시 시도해주세요.");
+            }
         }
-
-        // 페이지 로드 시 실행
-        window.onload = loadComments;
-
     </script>
 </body>
 
 </html>
+
 
 
 
