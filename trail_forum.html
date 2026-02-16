@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <link rel="icon" type="image/png" href="TRAIL_favicon.PNG">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNUTI TRAIL Forum - Resonance</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <style>
+        /* 1. 디자인 시스템 & 변수 */
+        :root {
+            /* 로고 텍스트의 네이비 색상 */
+            --primary: #003458; 
+            --primary-dark: #00213a;
+            
+            /* 로고 심볼의 무지개 그라디언트 */
+            --trail-rainbow: linear-gradient(135deg, #3db7cc 0%, #7ac143 25%, #f4c542 50%, #f47b20 75%, #e64c3c 100%);
+            
+            --text-main: #111111;
+            --text-sub: #555555;
+            --bg-light: #F8F9FA;
+            --white: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
+        body { color: var(--text-main); line-height: 1.7; overflow-x: hidden; background-color: var(--white); }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* 2. 네비게이션 */
+        header {
+            position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px); z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .nav-inner {
+            display: flex; justify-content: space-between; align-items: center; height: 80px;
+        }
+        
+        /* 로고 이미지 스타일 */
+        .logo-link { display: flex; align-items: center; gap: 10px; }
+        .logo-img { height: 50px; width: auto; } 
+
+        nav ul { display: flex; gap: 30px; }
+        nav a { font-size: 0.95rem; font-weight: 600; color: var(--text-sub); position: relative;}
+        nav a:hover { color: var(--primary); }
+        
+        /* 네비게이션 호버 시 무지개 밑줄 */
+        nav a::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0;
+            background: var(--trail-rainbow); transition: 0.3s;
+        }
+        nav a:hover::after { width: 100%; }
+
+        /* 3. Hero Section (Rainbow Resonance Theme) */
+        .hero {
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            text-align: center; position: relative; overflow: hidden;
+            background: radial-gradient(circle at 50% 50%, #fff 0%, #f0f4f8 100%);
+        }
+
+        /* 무지개 파동(Ripple) 효과 */
+        .ripple {
+            position: absolute; border-radius: 50%;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            animation: rippleEffect 5s infinite linear;
+            border: 1.5px solid transparent;
+            opacity: 0;
+        }
+        
+        /* 각 파동마다 다른 색상 적용 (로고 색상 추출) */
+        .ripple:nth-child(1) { border-color: #3db7cc; animation-delay: 0s; } /* Blue */
+        .ripple:nth-child(2) { border-color: #7ac143; animation-delay: 1.2s; } /* Green */
+        .ripple:nth-child(3) { border-color: #f4c542; animation-delay: 2.4s; } /* Yellow */
+        .ripple:nth-child(4) { border-color: #f47b20; animation-delay: 3.6s; } /* Orange */
+        .ripple:nth-child(5) { border-color: #e64c3c; animation-delay: 4.8s; } /* Red */
+
+        @keyframes rippleEffect {
+            0% { width: 100px; height: 100px; opacity: 0.8; transform: translate(-50%, -50%) scale(0.5); }
+            100% { width: 1200px; height: 1200px; opacity: 0; transform: translate(-50%, -50%) scale(1.5); border-width: 0px; }
+        }
+
+        .hero-content { position: relative; z-index: 2; opacity: 0; animation: fadeUp 1.2s ease-out forwards; }
+        
+        .hero-label { 
+            display: inline-block; padding: 8px 16px; border-radius: 50px; 
+            background: rgba(0, 52, 88, 0.05); color: var(--primary); 
+            font-weight: 700; font-size: 0.9rem; margin-bottom: 20px;
+            border: 1px solid rgba(0, 52, 88, 0.1);
+        }
+
+        /* 무지개 타이틀 */
+        .hero h1 { 
+            font-size: 3.8rem; line-height: 1.2; margin-bottom: 20px; font-weight: 800; letter-spacing: -1px;
+            background: var(--trail-rainbow);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p { font-size: 1.2rem; color: var(--text-sub); max-width: 600px; margin: 0 auto 40px; }
+        
+        .btn-hero {
+            padding: 15px 40px; background: var(--primary); color: white; 
+            border-radius: 30px; font-weight: 600; font-size: 1.1rem;
+            box-shadow: 0 10px 20px rgba(0, 52, 88, 0.2);
+            position: relative; overflow: hidden; z-index: 1; border: none;
+        }
+        /* 버튼 호버 시 무지개 배경 등장 */
+        .btn-hero::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--trail-rainbow); z-index: -1;
+            transition: opacity 0.3s; opacity: 0;
+        }
+        .btn-hero:hover::before { opacity: 1; }
+        .btn-hero:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(0,0,0,0.15); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 4. 소개 및 테마 (Grid Layout) */
+        section { padding: 100px 0; }
+        .section-header { margin-bottom: 60px; text-align: center; }
+        .section-header h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; color: var(--primary); }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .info-text h3 { font-size: 1.8rem; margin-bottom: 20px; }
+        .info-text p { margin-bottom: 20px; color: var(--text-sub); text-align: justify; }
+        
+        /* 박스 테두리에 무지개 그라디언트 적용 */
+        .info-box {
+            background: var(--bg-light); padding: 40px; border-radius: 20px;
+            position: relative; overflow: hidden;
+        }
+        .info-box::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%;
+            background: var(--trail-rainbow);
+        }
+
+        .highlight { font-weight: 700; color: var(--text-main); }
+
+        .timeline-container { position: relative; max-width: 800px; margin: 0 auto; }
+        
+        .timeline-item { 
+            display: flex; 
+            gap: 60px; /* 수정: 간격을 30px -> 60px로 넓혀 겹침 방지 */
+            margin-bottom: 40px; position: relative; 
+            opacity: 0; transform: translateY(20px); transition: 0.6s ease-out;
+        }
+        .timeline-item.visible { opacity: 1; transform: translateY(0); }
+
+        .time-box { 
+            min-width: 135px; /* 수정: 시간 텍스트가 줄바꿈되지 않도록 너비 확보 */
+            text-align: right; padding-top: 5px;
+            font-weight: 700; color: var(--primary); font-size: 1.1rem;
+            flex-shrink: 0; /* 너비가 줄어들지 않도록 고정 */
+        }
+        
+        .content-box { 
+            background: white; border: 1px solid #eee; padding: 25px; 
+            border-radius: 15px; flex: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        
+        /* 타임라인 점 (수정됨) */
+        .content-box::before {
+            content: ''; position: absolute; 
+            /* 수정: 간격 중앙에 오도록 위치 재계산 (-30px 기준, 점 크기 고려하여 -41px) */
+            left: -41px; 
+            top: 20px; /* 텍스트 높이와 시각적 정렬 */
+            width: 14px; height: 14px; /* 점 크기 조정 */
+            background: var(--white); border-radius: 50%;
+            border: 4px solid var(--primary); box-shadow: 0 0 0 3px rgba(238,238,238,0.5);
+            z-index: 1;
+        }
+        
+        /* 연결 선 (수정됨) */
+        .timeline-item:not(:last-child) .content-box::after {
+            content: ''; position: absolute; 
+            left: -30px; /* 수정: 간격(60px)의 정확한 중앙에 배치 */
+            top: 35px;
+            width: 2px; height: calc(100% + 45px); 
+            background: #e0e0e0;
+        }
+
+        .session-tag {
+            display: inline-block; padding: 4px 10px; border-radius: 4px;
+            font-size: 0.8rem; font-weight: 600; margin-bottom: 10px;
+            background: #eef4f9; color: var(--primary);
+        }
+        .session-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+        .session-desc { font-size: 0.95rem; color: var(--text-sub); margin-bottom: 15px; }
+
+        /* 아코디언 */
+        .accordion { margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; display: none; }
+        .accordion-toggle {
+            background: none; border: none; color: var(--text-sub); cursor: pointer;
+            font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 5px;
+        }
+        .accordion-toggle:hover { color: var(--primary); }
+        .q-list li { margin-bottom: 15px; }
+        .q-title { font-weight: 700; color: var(--text-main); display: block; margin-bottom: 5px; }
+        .q-sub { font-size: 0.9rem; color: #666; padding-left: 10px; border-left: 2px solid var(--primary); }
+
+        /* 6. 의견 공유 (Discussion) */
+        .discussion-section { background: var(--bg-light); }
+        .discussion-layout { display: flex; gap: 50px; }
+        .discussion-form { flex: 1; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); h-height: fit-content; }
+        .discussion-list { flex: 1.5; max-height: 600px; overflow-y: auto; padding-right: 10px; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .input-group input, .input-group textarea {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
+            font-size: 1rem; transition: 0.3s;
+        }
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none; border-color: var(--primary);
+        }
+        .btn-submit {
+            width: 100%; padding: 12px; background: var(--primary); color: white;
+            border: none; border-radius: 8px; font-weight: 700; cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-submit:hover { background: var(--primary-dark); }
+
+        .comment-card {
+            background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px;
+            border: 1px solid #eee; transition: 0.3s;
+        }
+        .comment-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .comment-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: #888; }
+        .comment-author { font-weight: 700; color: var(--primary); }
+        .comment-body { font-size: 1rem; color: var(--text-main); white-space: pre-wrap; }
+
+        /* Footer */
+        footer { background: #111; color: #888; padding: 60px 0; text-align: center; font-size: 0.9rem; }
+        footer strong { color: white; display: block; margin-bottom: 10px; font-size: 1.1rem; }
+        footer .full-name { color: #aaa; font-size: 0.8rem; margin-bottom: 20px; display: block; }
+
+        /* 모바일 대응 (수정됨) */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .info-grid { grid-template-columns: 1fr; }
+            .discussion-layout { flex-direction: column; }
+            
+            /* 모바일 타임라인 재정렬 */
+            .timeline-item { flex-direction: column; gap: 15px; }
+            .time-box { text-align: left; margin-left: 20px; min-width: auto; }
+            
+            /* 모바일에서는 점 위치를 박스 상단 모서리로 이동 */
+            .content-box::before { left: -9px; top: -16px; }
+            .timeline-item:not(:last-child) .content-box::after { left: -3px; top: -10px; height: calc(100% + 25px); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-inner">
+            <a href="#" class="logo-link">
+                <img src="trail_logo.jpeg" alt="SNUTI TRAIL Logo" class="logo-img">
+            </a>
+
+            <nav>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#theme">Theme</a></li>
+                    <li><a href="#program">Program</a></li>
+                    <li><a href="#discussion">Opinion</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="ripple"></div>
+        <div class="ripple"></div>
+        <div class="ripple"></div>
+        <div class="ripple"></div>
+        <div class="ripple"></div>
+        
+        <div class="hero-content container">
+            <span class="hero-label">SNUTI TRAIL Forum 2026</span>
+            <h1>Resonance<br>융합의 언어와 소통</h1>
+            <p>기술과 사회, 나와 너를 잇는 대화.<br>경계를 넘어 새로운 가치를 창조하는 공명의 장에 당신을 초대합니다.</p>
+            <a href="#program" class="btn-hero">세션 일정 보기</a>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>About TRAIL Forum</h2>
+                <p>무한한 가능성으로 빛나는 우리의 발자취</p>
+            </div>
+            <div class="info-grid">
+                <div class="info-text">
+                    <h3>퍼뜨릴 가치가 있는 생각들,<br>그 시작점.</h3>
+                    <p>
+                        <strong>TRAIL</strong>(Transnational Research Alliance for Innovative Learners)은 서울대학교 첨단융합학부 학생들이 주도하는 혁신적인 학술 공동체입니다. 
+                        <strong>TRAIL Forum</strong>은 TED의 모토에서 영감을 받아, 기술과 사회를 잇는 대화를 통해 학우들에게 의미 있는 영감을 주고,
+                        각자의 변화와 성장으로 이어지는 것을 목표로 합니다.
+                    </p>
+                    <p>
+                        우리는 '자유로운 꿈과 담대한 도전'을 실현하기 위해 다양한 분야를 접하고, 
+                        자유롭게 소통하며 지식과 경험을 교류합니다. 소통을 통한 연결, 연결을 통한 혁신.
+                        TRAIL Forum은 21세기 융합 인재들의 성장 기반이 됩니다.
+                    </p>
+                </div>
+                <div class="info-box">
+                    <p class="highlight" style="font-size: 1.2rem; margin-bottom: 20px; color: var(--primary);">💡 TRAIL Core Values</p>
+                    <ul style="list-style: disc; padding-left: 20px; color: var(--text-sub);">
+                        <li><strong>Inspiration:</strong> 기술과 사회를 잇는 영감</li>
+                        <li><strong>Growth:</strong> 협업과 융합을 통한 역량 성장</li>
+                        <li><strong>Connection:</strong> 분야를 넘나드는 자유로운 소통</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="theme" style="background-color: #f0f7f4;">
+        <div class="container">
+            <div class="info-grid" style="direction: rtl;"> <div class="info-text" style="direction: ltr;">
+                    <span style="color:var(--primary); font-weight:700;">2026 Topic</span>
+                    <h3>Resonance:<br>융합의 언어와 소통</h3>
+                    <p>
+                        첨단 기술이 고도화될수록 학문의 경계는 뚜렷해지지만, 혁신은 그 경계가 맞닿는 접점에서 탄생합니다.
+                        우리는 <strong>'소통'</strong>을 단순한 정보 전달이 아닌, 서로 다른 분야를 연결하고 복잡한 기술을
+                        사회적 가치로 전환하는 핵심 수단으로 바라봅니다.
+                    </p>
+                    <p>
+                        글로벌 연구 현장, 실리콘 밸리, 공공 정책의 최전선에서 활동하는 전문가들과 함께
+                        낯선 분야와 대화하는 법, 그리고 <strong>진정한 공명(Resonance)</strong>을 일으키는 법을 탐구합니다.
+                    </p>
+                </div>
+                <div class="info-box" style="background: white; direction: ltr;">
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">🔍 탐구 질문</h4>
+                    <p style="margin-bottom: 10px;"><strong>Q. 나와 나:</strong> 내 안의 생각을 명확히 정리하는 법은?</p>
+                    <p style="margin-bottom: 10px;"><strong>Q. 나와 우리:</strong> 팀 내 갈등을 넘어서는 소통은?</p>
+                    <p style="margin-bottom: 10px;"><strong>Q. 나와 너희:</strong> 타 분야 전문가와 협업하는 언어는?</p>
+                    <p><strong>Q. 나와 여러분:</strong> 대중에게 복잡한 기술을 전하는 법은?</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="program">
+        <div class="container">
+            <div class="section-header">
+                <h2>Program Timeline</h2>
+                <p>Online & In-person Hybrid Sessions</p>
+            </div>
+
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="time-box">14:30 - 15:10</div>
+                    <div class="content-box">
+                        <span class="session-tag">Online / Town Hall</span>
+                        <h3 class="session-title">Session 1: Resonance Talk</h3>
+                        <p class="session-desc">TRAIL Forum 소개 및 연사들과 함께하는 타운홀 미팅. 5가지 공통 질문을 중심으로 '소통'에 대해 깊이 있게 이야기합니다.</p>
+                        <button class="accordion-toggle" onclick="toggleAccordion('acc1')">▼ 공통 질문 자세히 보기</button>
+                        <div id="acc1" class="accordion">
+                            <ul class="q-list">
+                                <li>
+                                    <span class="q-title">1. '나'와 '나'간의 소통</span>
+                                    <span class="q-sub">생각 정리 방법 및 마인드 컨트롤 노하우</span>
+                                </li>
+                                <li>
+                                    <span class="q-title">2. '나'와 '우리'간의 소통 (Team)</span>
+                                    <span class="q-sub">팀 내부 지식 공유 및 갈등 해결 방안</span>
+                                </li>
+                                <li>
+                                    <span class="q-title">3. '나'와 '너희'간의 소통 (Interdisciplinary)</span>
+                                    <span class="q-sub">타 분야(행정가 등)와의 협업 및 언어 차이 극복</span>
+                                </li>
+                                <li>
+                                    <span class="q-title">4. '나'와 '여러분'간의 소통 (Public)</span>
+                                    <span class="q-sub">대중 대상의 과학 커뮤니케이션 및 스피치</span>
+                                </li>
+                                <li>
+                                    <span class="q-title">5. 사회초년생을 위한 소통</span>
+                                    <span class="q-sub">20대 대학생에게 전하는 인생 선배의 조언</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time-box">15:10 - 15:30</div>
+                    <div class="content-box">
+                        <span class="session-tag">Online / Q&A</span>
+                        <h3 class="session-title">Session 2: Panel Q&A</h3>
+                        <p class="session-desc">Session 1의 후속 질문 및 참여 학생들의 고민 상담. 연사님들의 추가적인 경험과 조언을 자유롭게 나눕니다.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time-box">15:30 - 15:45</div>
+                    <div class="content-box" style="background: #f1f1f1; border:none;">
+                        <h3 class="session-title" style="font-size: 1.1rem; margin:0;">☕ Break Time</h3>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time-box">15:45 - 17:25</div>
+                    <div class="content-box">
+                        <span class="session-tag">In-person / Lectures</span>
+                        <h3 class="session-title">Session 3: Insight Lectures</h3>
+                        <p class="session-desc">'Resonance'를 주제로 한 연사별 단독 강연 (각 30분).</p>
+                        <ul style="margin-top:10px; font-size: 0.9rem; color: #555;">
+                            <li>• Lecture 1 (15:45 ~ 16:15)</li>
+                            <li>• Lecture 2 (16:20 ~ 16:50)</li>
+                            <li>• Lecture 3 (16:55 ~ 17:25)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time-box">17:30 - 18:00</div>
+                    <div class="content-box">
+                        <span class="session-tag">In-person / Discussion</span>
+                        <h3 class="session-title">Session 4: Group Discussion</h3>
+                        <p class="session-desc">연사들과 소규모 그룹으로 나뉘어 진행하는 심층 토의 세션. 강연 내용을 바탕으로 더 가까운 거리에서 소통합니다.</p>
+                    </div>
+                </div>
+
+                 <div class="timeline-item">
+                    <div class="time-box">18:00 ~ </div>
+                    <div class="content-box" style="border-left: 5px solid var(--primary);">
+                        <span class="session-tag">Networking</span>
+                        <h3 class="session-title">Dinner Networking</h3>
+                        <p class="session-desc">연사 및 참여 학생 간의 저녁 식사 및 네트워킹.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="discussion" class="discussion-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Share Your Resonance</h2>
+                <p>이번 포럼의 주제, 혹은 소통에 대한 여러분의 생각을 남겨주세요.</p>
+            </div>
+            
+            <div class="discussion-layout">
+                <div class="discussion-form">
+                    <div class="input-group">
+                        <label>Name (Nickname)</label>
+                        <input type="text" id="commentName" placeholder="이름을 입력하세요">
+                    </div>
+                    <div class="input-group">
+                        <label>Your Opinion</label>
+                        <textarea id="commentText" rows="5" placeholder="소통에 대한 고민이나, 포럼에 기대하는 점을 자유롭게 적어주세요."></textarea>
+                    </div>
+                    <button class="btn-submit" onclick="addComment()">의견 남기기</button>
+                </div>
+
+                <div class="discussion-list" id="commentList">
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <strong>TRAIL Forum | SNUTI Honor Society</strong>
+            <span class="full-name">Transnational Research Alliance for Innovative Learners</span>
+            <p>서울대학교 첨단융합학부 학생주도학술공동체</p>
+            <p>문의: snuti.trail@gmail.com</p>
+            <br>
+            <p>&copy; 2026 TRAIL Forum. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 스크롤 애니메이션 (타임라인 등장 효과)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.timeline-item').forEach((item) => {
+            observer.observe(item);
+        });
+
+        // 2. 아코디언 토글 함수
+        function toggleAccordion(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === "block") {
+                el.style.display = "none";
+            } else {
+                el.style.display = "block";
+            }
+        }
+
+        // 3. 댓글 시스템 (Local Storage 활용)
+        const commentListEl = document.getElementById('commentList');
+        
+        // 초기 데이터 (예시)
+        const initialComments = [
+            { name: "예비공학도", text: "나와 다른 분야 사람들과 소통하는 게 항상 어려웠는데, 이번 포럼이 정말 기대됩니다!", date: "2026.02.16" },
+            { name: "SNU_Lover", text: "Resonance라는 주제가 정말 멋지네요. 융합의 시대에 꼭 필요한 논의라고 생각합니다.", date: "2026.02.15" }
+        ];
+
+        // 저장된 댓글 불러오기
+        function loadComments() {
+            const stored = localStorage.getItem('trailComments');
+            const comments = stored ? JSON.parse(stored) : initialComments;
+            
+            commentListEl.innerHTML = '';
+            comments.forEach(c => createCommentElement(c));
+        }
+
+        // 댓글 요소 생성 및 추가
+        function createCommentElement(data) {
+            const div = document.createElement('div');
+            div.className = 'comment-card';
+            div.innerHTML = `
+                <div class="comment-header">
+                    <span class="comment-author">${data.name}</span>
+                    <span>${data.date}</span>
+                </div>
+                <div class="comment-body">${data.text}</div>
+            `;
+            // 최신순으로 위에 추가
+            commentListEl.prepend(div);
+        }
+
+        // 댓글 추가 함수
+        function addComment() {
+            const nameInput = document.getElementById('commentName');
+            const textInput = document.getElementById('commentText');
+            
+            if(!nameInput.value || !textInput.value) {
+                alert("이름과 내용을 모두 입력해주세요.");
+                return;
+            }
+
+            const newComment = {
+                name: nameInput.value,
+                text: textInput.value,
+                date: new Date().toLocaleDateString()
+            };
+
+            // 로컬 스토리지 업데이트
+            const stored = localStorage.getItem('trailComments');
+            const comments = stored ? JSON.parse(stored) : initialComments;
+            comments.push(newComment);
+            localStorage.setItem('trailComments', JSON.stringify(comments));
+
+            // 화면 업데이트
+            createCommentElement(newComment);
+
+            // 입력창 초기화
+            nameInput.value = '';
+            textInput.value = '';
+        }
+
+        // 페이지 로드 시 실행
+        window.onload = loadComments;
+
+    </script>
+</body>
+</html>
