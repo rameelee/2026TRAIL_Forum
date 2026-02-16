@@ -276,21 +276,43 @@
 
         /* 모바일 대응 */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
+            /* 헤더 높이를 내용에 맞게 자동 조절 */
+            .nav-inner { 
+                height: auto; 
+                padding: 15px 0; 
+                flex-direction: column; /* 로고와 메뉴를 위아래로 배치 */
+                gap: 15px;
+            }
+
+            /* 로고 크기 축소 */
+            .logo-img { height: 40px; } 
+
+            /* 메뉴 간격 좁히기 및 폰트 크기 조절 */
+            nav ul { 
+                gap: 15px; /* 간격 30px -> 15px로 축소 */
+                flex-wrap: wrap; /* 메뉴가 많으면 줄바꿈 허용 */
+                justify-content: center;
+            }
+            
+            nav a { font-size: 0.85rem; } /* 글자 크기 약간 축소 */
+
+            /* 히어로 텍스트 크기 조절 */
+            .hero h1 { font-size: 2.2rem; word-break: keep-all; }
+            
+            /* 그리드 및 배치 수정 */
             .info-grid { grid-template-columns: 1fr; }
             .discussion-layout { flex-direction: column; }
             
-            /* 모바일 타임라인 재정렬 */
+            /* 타임라인 수정 */
             .timeline-item { flex-direction: column; gap: 15px; }
             .time-box { text-align: left; margin-left: 20px; min-width: auto; }
-            
-            /* 모바일에서는 점 위치를 박스 상단 모서리로 이동 */
             .content-box::before { left: -9px; top: -16px; }
             .timeline-item:not(:last-child) .content-box::after { left: -3px; top: -10px; height: calc(100% + 25px); }
+            
+            /* 일시/장소 정보 세로 배치 */
+            .hero-info-bar { flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+            .info-pill { width: 100%; justify-content: center; max-width: 300px; }
         }
-    </style>
-</head>
-<body>
 
     <header>
         <div class="container nav-inner">
@@ -512,7 +534,7 @@
 
     <footer id="contact">
         <div class="container">
-            <strong>TRAIL Forum | SNUTI Honor Society</strong>
+            <strong>TRAIL Forum</strong>
             <span class="full-name">Transnational Research Alliance for Innovative Learners</span>
             <p>서울대학교 첨단융합학부 TRAIL</p>
             <br>
@@ -614,6 +636,7 @@
 </body>
 
 </html>
+
 
 
 
