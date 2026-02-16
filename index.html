@@ -164,7 +164,7 @@
             position: relative;
         }
         
-        /* 타임라인 점 (수정됨) */
+        /* 타임라인 점 */
         .content-box::before {
             content: ''; position: absolute; 
             /* 수정: 간격 중앙에 오도록 위치 재계산 (-30px 기준, 점 크기 고려하여 -41px) */
@@ -176,7 +176,7 @@
             z-index: 1;
         }
         
-        /* 연결 선 (수정됨) */
+        /* 연결 선 */
         .timeline-item:not(:last-child) .content-box::after {
             content: ''; position: absolute; 
             left: -30px; /* 수정: 간격(60px)의 정확한 중앙에 배치 */
@@ -240,7 +240,7 @@
         footer strong { color: white; display: block; margin-bottom: 10px; font-size: 1.1rem; }
         footer .full-name { color: #aaa; font-size: 0.8rem; margin-bottom: 20px; display: block; }
 
-        /* 모바일 대응 (수정됨) */
+        /* 모바일 대응 */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
             .info-grid { grid-template-columns: 1fr; }
@@ -570,4 +570,5 @@
 
     </script>
 </body>
+
 </html>
